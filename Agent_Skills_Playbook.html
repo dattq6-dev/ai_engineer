@@ -1,0 +1,816 @@
+<title>Agent Skills Playbook</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#f4f6f7;
+    --surface:#ffffff;
+    --ink:#132029;
+    --ink-soft:#4d5f6c;
+    --ink-faint:#7c8b96;
+    --line:#dde3e7;
+    --line-strong:#c3ccd2;
+    --accent:#0b6e86;
+    --accent-ink:#ffffff;
+    --accent-api:#2c5aa0;
+    --accent-api-soft:#e8eef8;
+    --accent-code:#0c7c59;
+    --accent-code-soft:#e5f4ee;
+    --accent-sdk:#7a4fae;
+    --accent-sdk-soft:#f1eaf9;
+    --amber:#a8660c;
+    --amber-soft:#faf1e2;
+    --shadow: 0 1px 2px rgba(19,32,41,.06), 0 8px 24px -12px rgba(19,32,41,.18);
+    --code-bg:#0f1b22;
+    --code-ink:#dbe7ec;
+    --code-accent:#7fd9c4;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0e151b;
+      --surface:#141d25;
+      --ink:#e8edf0;
+      --ink-soft:#a7b6bf;
+      --ink-faint:#7a8993;
+      --line:#26333c;
+      --line-strong:#33434e;
+      --accent:#4fb8cf;
+      --accent-ink:#08181d;
+      --accent-api:#7ea6e0;
+      --accent-api-soft:#182437;
+      --accent-code:#5fce9f;
+      --accent-code-soft:#132621;
+      --accent-sdk:#b592e0;
+      --accent-sdk-soft:#241a33;
+      --amber:#e0a94f;
+      --amber-soft:#2a2113;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.5);
+      --code-bg:#0a1216;
+      --code-ink:#d7e6ea;
+      --code-accent:#7fd9c4;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0e151b;
+    --surface:#141d25;
+    --ink:#e8edf0;
+    --ink-soft:#a7b6bf;
+    --ink-faint:#7a8993;
+    --line:#26333c;
+    --line-strong:#33434e;
+    --accent:#4fb8cf;
+    --accent-ink:#08181d;
+    --accent-api:#7ea6e0;
+    --accent-api-soft:#182437;
+    --accent-code:#5fce9f;
+    --accent-code-soft:#132621;
+    --accent-sdk:#b592e0;
+    --accent-sdk-soft:#241a33;
+    --amber:#e0a94f;
+    --amber-soft:#2a2113;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.5);
+    --code-bg:#0a1216;
+    --code-ink:#d7e6ea;
+    --code-accent:#7fd9c4;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:"Spectral", Georgia, "Times New Roman", serif;
+    font-weight:600;
+    color:var(--ink);
+    text-wrap:balance;
+    margin:0;
+  }
+  a{color:var(--accent);}
+  code, .mono{font-family:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;}
+
+  /* ---------- top nav ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topnav-inner{
+    max-width:900px; margin:0 auto;
+    display:flex; gap:.35rem; align-items:center;
+    padding:.7rem 1.25rem;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .topnav-inner::-webkit-scrollbar{display:none;}
+  .topnav a{
+    flex:none;
+    font-size:.8rem; font-weight:500;
+    color:var(--ink-soft);
+    text-decoration:none;
+    padding:.35rem .65rem;
+    border-radius:999px;
+    white-space:nowrap;
+    border:1px solid transparent;
+  }
+  .topnav a:hover{border-color:var(--line-strong); color:var(--ink);}
+  .topnav .brand{
+    font-family:"Spectral", serif; font-weight:600; font-size:.95rem;
+    color:var(--ink); margin-right:.5rem; text-decoration:none; padding:0;
+  }
+
+  main{max-width:900px; margin:0 auto; padding:0 1.25rem 5rem;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:3.4rem 0 2.2rem; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--accent); font-weight:600;
+    display:flex; align-items:center; gap:.5rem; margin-bottom:.9rem;
+  }
+  .eyebrow::before{content:""; width:1.4rem; height:1px; background:var(--accent);}
+  .hero h1{font-size:clamp(2rem, 4.4vw, 2.85rem); line-height:1.12; max-width:20ch;}
+  .hero .dek{
+    margin-top:1rem; max-width:62ch; color:var(--ink-soft); font-size:1.08rem;
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.5rem;
+  }
+  .chip{
+    font-family:"IBM Plex Mono", monospace; font-size:.72rem; font-weight:500;
+    padding:.3rem .6rem; border-radius:6px; border:1px solid var(--line-strong);
+    color:var(--ink-soft);
+  }
+
+  section{padding:3rem 0; border-bottom:1px solid var(--line); scroll-margin-top:4.2rem;}
+  section:last-of-type{border-bottom:none;}
+  .kicker{
+    font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink-faint); font-weight:600; margin-bottom:.6rem;
+  }
+  h2{font-size:1.65rem; margin-bottom:.9rem;}
+  h2 .num{color:var(--ink-faint); font-weight:400; margin-right:.4rem;}
+  h3{font-size:1.18rem; margin:1.6rem 0 .6rem;}
+  p{margin:.75rem 0; max-width:70ch;}
+  ul, ol{margin:.75rem 0; padding-left:1.3rem; max-width:66ch;}
+  li{margin:.35rem 0;}
+  strong{color:var(--ink); font-weight:600;}
+
+  .lede{font-size:1.05rem; color:var(--ink-soft); max-width:66ch;}
+
+  /* ---------- figures ---------- */
+  figure{margin:1.6rem 0 1.8rem; padding:1.1rem 1.1rem .9rem; background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow);}
+  figure .fig-scroll{overflow-x:auto;}
+  figure svg{display:block; width:100%; height:auto; min-width:560px;}
+  figcaption{
+    margin-top:.7rem; font-size:.83rem; color:var(--ink-faint); max-width:70ch;
+    border-top:1px dashed var(--line); padding-top:.6rem;
+  }
+  .svg-label{font-family:"IBM Plex Sans", sans-serif; font-size:12px; fill:currentColor;}
+  .svg-mono{font-family:"IBM Plex Mono", monospace; font-size:11px; fill:currentColor;}
+  .svg-caption{fill:currentColor; opacity:.62;}
+
+  /* ---------- example callout ---------- */
+  .example{
+    margin:1.1rem 0; padding:1rem 1.1rem; border-radius:10px;
+    background:var(--accent-code-soft); border:1px solid var(--line);
+    border-left:3px solid var(--accent-code);
+  }
+  .example .tag{
+    font-family:"IBM Plex Mono", monospace; font-size:.68rem; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--accent-code); display:block; margin-bottom:.4rem;
+  }
+  .example p{margin:.35rem 0;}
+
+  .callout{
+    margin:1.1rem 0; padding:1rem 1.1rem; border-radius:10px;
+    background:var(--amber-soft); border:1px solid var(--line);
+    border-left:3px solid var(--amber);
+  }
+  .callout .tag{
+    font-family:"IBM Plex Mono", monospace; font-size:.68rem; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:.4rem;
+  }
+  .callout p{margin:.35rem 0;}
+
+  /* ---------- code blocks ---------- */
+  pre{
+    background:var(--code-bg); color:var(--code-ink);
+    padding:1rem 1.1rem; border-radius:10px; overflow-x:auto;
+    font-family:"IBM Plex Mono", monospace; font-size:.82rem; line-height:1.55;
+    margin:1rem 0; box-shadow:var(--shadow);
+  }
+  pre .c1{color:var(--code-accent);}
+  code:not(pre code){
+    background:color-mix(in srgb, var(--ink) 8%, transparent);
+    padding:.1rem .35rem; border-radius:4px; font-size:.86em;
+  }
+
+  /* ---------- tables ---------- */
+  .table-wrap{overflow-x:auto; margin:1.2rem 0; border-radius:10px; border:1px solid var(--line);}
+  table{width:100%; border-collapse:collapse; min-width:640px; background:var(--surface);}
+  th, td{text-align:left; padding:.65rem .8rem; border-bottom:1px solid var(--line); font-size:.88rem; vertical-align:top;}
+  th{
+    font-family:"IBM Plex Mono", monospace; font-size:.7rem; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:600; background:color-mix(in srgb, var(--ink) 4%, var(--surface));
+  }
+  tr:last-child td{border-bottom:none;}
+  td.hl{font-weight:600; color:var(--ink);}
+
+  /* ---------- surface cards (three-column at-a-glance) ---------- */
+  .surface-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:.9rem; margin:1.4rem 0;}
+  @media (max-width:760px){.surface-grid{grid-template-columns:1fr;}}
+  .s-card{
+    border:1px solid var(--line); border-radius:12px; padding:1.1rem;
+    background:var(--surface); border-top:3px solid var(--sc, var(--accent));
+  }
+  .s-card.api{--sc:var(--accent-api);}
+  .s-card.code{--sc:var(--accent-code);}
+  .s-card.sdk{--sc:var(--accent-sdk);}
+  .s-card h4{font-size:1rem; font-family:"IBM Plex Sans"; font-weight:700; color:var(--sc);}
+  .s-card .who{font-size:.78rem; color:var(--ink-faint); margin-bottom:.6rem;}
+  .s-card p{font-size:.86rem; margin:.5rem 0; color:var(--ink-soft);}
+
+  /* ---------- section header banners ---------- */
+  .banner{
+    display:flex; align-items:center; gap:.6rem; margin-bottom:.3rem;
+  }
+  .banner .dot{width:.6rem; height:.6rem; border-radius:50%; background:var(--sc);}
+  .section-api{--sc:var(--accent-api);}
+  .section-code{--sc:var(--accent-code);}
+  .section-sdk{--sc:var(--accent-sdk);}
+  .section-api h2, .section-code h2, .section-sdk h2{color:var(--sc);}
+
+  /* ---------- when-to-use / avoid pairs ---------- */
+  .use-pair{display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin:1.1rem 0;}
+  @media (max-width:640px){.use-pair{grid-template-columns:1fr;}}
+  .use-box{border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; background:var(--surface);}
+  .use-box .tag{font-family:"IBM Plex Mono",monospace; font-size:.68rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em;}
+  .use-box.good .tag{color:var(--accent-code);}
+  .use-box.bad .tag{color:var(--ink-faint);}
+  .use-box ul{margin:.5rem 0 0; padding-left:1.1rem;}
+  .use-box li{font-size:.87rem; margin:.3rem 0; color:var(--ink-soft);}
+
+  /* ---------- decision table ---------- */
+  .decide td:first-child{font-family:"IBM Plex Mono",monospace; font-size:.82rem; color:var(--ink-soft);}
+  .decide td:last-child{font-weight:600;}
+
+  /* ---------- quiz ---------- */
+  .quiz-item{
+    border:1px solid var(--line); border-radius:10px; margin:.9rem 0; background:var(--surface);
+    overflow:hidden;
+  }
+  .quiz-item summary{
+    cursor:pointer; list-style:none; padding:1rem 1.1rem; font-weight:600; font-size:.96rem;
+    display:flex; gap:.7rem; align-items:baseline;
+  }
+  .quiz-item summary::-webkit-details-marker{display:none;}
+  .quiz-item summary .qn{
+    font-family:"IBM Plex Mono",monospace; color:var(--accent); font-weight:700; flex:none;
+  }
+  .quiz-item summary::after{
+    content:"reveal answer"; margin-left:auto; font-family:"IBM Plex Mono",monospace;
+    font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); font-weight:500;
+  }
+  .quiz-item[open] summary::after{content:"hide answer";}
+  .quiz-answer{padding:0 1.1rem 1.1rem; color:var(--ink-soft); font-size:.9rem; border-top:1px dashed var(--line); margin-top:0; padding-top:.8rem;}
+  .quiz-answer strong{color:var(--accent);}
+
+  /* ---------- sources ---------- */
+  .sources ol{padding-left:1.2rem;}
+  .sources li{font-size:.88rem; margin:.5rem 0;}
+  .sources a{text-decoration:underline; text-underline-offset:2px;}
+
+  footer{padding:2.2rem 0 3rem; text-align:center; color:var(--ink-faint); font-size:.8rem;}
+
+  ::selection{background:color-mix(in srgb, var(--accent) 30%, transparent);}
+
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+</style>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="brand" href="#top">Agent Skills</a>
+    <a href="#concept">Concept</a>
+    <a href="#compare">Compare</a>
+    <a href="#api">API</a>
+    <a href="#code">Code</a>
+    <a href="#sdk">SDK</a>
+    <a href="#decide">Which one</a>
+    <a href="#banking">Banking &amp; finance</a>
+    <a href="#quiz">Quiz</a>
+    <a href="#sources">Sources</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <div class="hero">
+    <div class="eyebrow">GenAI Engineer &middot; Anthropic training track</div>
+    <h1>Agent Skills, across all three surfaces</h1>
+    <p class="dek">A Skill is a folder — instructions, scripts, reference files — that gives Claude an on-demand specialty. The same <code>SKILL.md</code> format shows up in three different runtimes: the raw Messages <strong>API</strong>, the <strong>Claude Code</strong> terminal, and your own product built on the <strong>Agent SDK</strong>. This page compares the three side by side, shows how to build each, and maps the pattern onto banking and finance work.</p>
+    <div class="hero-meta">
+      <span class="chip">SKILL.md + progressive disclosure</span>
+      <span class="chip">Claude API — container.skills</span>
+      <span class="chip">Claude Code — ~/.claude/skills</span>
+      <span class="chip">Agent SDK — query() options</span>
+    </div>
+  </div>
+
+  <!-- ============ CONCEPT ============ -->
+  <section id="concept">
+    <div class="kicker">01 &middot; Core concept</div>
+    <h2>What a Skill actually is</h2>
+    <p class="lede">Before comparing the three surfaces, one mechanism explains all of them: <strong>progressive disclosure</strong>. A Skill is not injected into the prompt wholesale — Claude reads more of it only as the task proves it's relevant.</p>
+
+    <p>Every Skill is a directory containing a required <code>SKILL.md</code> file. That file has two parts: YAML <strong>frontmatter</strong> (a <code>name</code> and a <code>description</code> — the description has to state both <em>what</em> the Skill does and <em>when</em> to use it, since that's the only text Claude sees before deciding to load the rest) and a Markdown <strong>body</strong> with the actual instructions. The folder can also hold extra reference files (<code>FORMS.md</code>, <code>REFERENCE.md</code>) and executable scripts.</p>
+
+    <figure>
+      <div class="fig-scroll">
+      <svg viewBox="0 0 860 260" role="img" aria-label="Three-stage pipeline: skill metadata is always loaded at roughly 100 tokens; the SKILL.md body loads only when the description matches the request, costing under 5000 tokens; bundled resources and scripts load or execute only when the body references them, at zero token cost until accessed.">
+        <defs>
+          <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <!-- box 1 -->
+        <rect x="10" y="60" width="230" height="140" rx="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="125" y="90" text-anchor="middle" class="svg-label" font-weight="700">Level 1 — Metadata</text>
+        <text x="125" y="112" text-anchor="middle" class="svg-mono">name + description</text>
+        <line x1="35" y1="128" x2="215" y2="128" stroke="currentColor" stroke-width="1" opacity=".35"/>
+        <text x="125" y="150" text-anchor="middle" class="svg-mono" fill="currentColor">~100 tokens / skill</text>
+        <text x="125" y="172" text-anchor="middle" class="svg-caption" font-size="11">always in the system prompt</text>
+
+        <!-- arrow 1 -->
+        <line x1="240" y1="130" x2="298" y2="130" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="269" y="118" text-anchor="middle" class="svg-caption" font-size="10.5">description</text>
+        <text x="269" y="150" text-anchor="middle" class="svg-caption" font-size="10.5">matches request</text>
+
+        <!-- box 2 -->
+        <rect x="303" y="40" width="250" height="180" rx="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="428" y="70" text-anchor="middle" class="svg-label" font-weight="700">Level 2 — SKILL.md body</text>
+        <text x="428" y="92" text-anchor="middle" class="svg-mono">workflow, examples, steps</text>
+        <line x1="325" y1="108" x2="530" y2="108" stroke="currentColor" stroke-width="1" opacity=".35"/>
+        <text x="428" y="132" text-anchor="middle" class="svg-mono">&lt; 5,000 tokens</text>
+        <text x="428" y="154" text-anchor="middle" class="svg-caption" font-size="11">loaded only when triggered</text>
+        <text x="428" y="172" text-anchor="middle" class="svg-caption" font-size="11">stays in context for the rest</text>
+        <text x="428" y="190" text-anchor="middle" class="svg-caption" font-size="11">of the conversation</text>
+
+        <!-- arrow 2 -->
+        <line x1="558" y1="130" x2="616" y2="130" stroke="currentColor" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="587" y="118" text-anchor="middle" class="svg-caption" font-size="10.5">body links a</text>
+        <text x="587" y="150" text-anchor="middle" class="svg-caption" font-size="10.5">file or script</text>
+
+        <!-- box 3 -->
+        <rect x="621" y="20" width="230" height="220" rx="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 5"/>
+        <text x="736" y="50" text-anchor="middle" class="svg-label" font-weight="700">Level 3 — Resources</text>
+        <text x="736" y="72" text-anchor="middle" class="svg-mono">reference.md, scripts/*.py</text>
+        <line x1="643" y1="88" x2="829" y2="88" stroke="currentColor" stroke-width="1" opacity=".35"/>
+        <text x="736" y="112" text-anchor="middle" class="svg-mono">0 tokens until read</text>
+        <text x="736" y="134" text-anchor="middle" class="svg-caption" font-size="11">docs load on reference;</text>
+        <text x="736" y="152" text-anchor="middle" class="svg-caption" font-size="11">scripts run via bash —</text>
+        <text x="736" y="170" text-anchor="middle" class="svg-caption" font-size="11">only their output, not</text>
+        <text x="736" y="188" text-anchor="middle" class="svg-caption" font-size="11">their code, enters context</text>
+      </svg>
+      </div>
+      <figcaption>Fig. 1 — Progressive disclosure. All three surfaces share this mechanism: only the metadata is "always on"; everything else is pulled in on demand, which is why a Skill can bundle a 40-page reference doc without taxing the context window.</figcaption>
+    </figure>
+
+    <p>Two consequences follow directly from this diagram, and both matter for a regulated environment like a bank:</p>
+    <ul>
+      <li><strong>Cost scales with relevance, not with what you've installed.</strong> You can enable dozens of Skills — a bank might have one per product line — without the system prompt ballooning, because only the <code>name</code> + <code>description</code> pair of an unused Skill ever loads.</li>
+      <li><strong>Deterministic steps belong in scripts, not prose.</strong> A Python script that computes a debt-service-coverage ratio and a paragraph asking Claude to compute it by reasoning give very different reliability guarantees. Executing the script is the pattern the Skill format is built to encourage — the code never enters context, only its printed result does.</li>
+    </ul>
+
+    <div class="callout">
+      <span class="tag">Governance note</span>
+      <p>Anthropic's own guidance is explicit that a Skill should be treated "like installing software": audit the <code>SKILL.md</code>, every bundled script, and any URL it fetches before you enable it, especially anything sourced outside your organization. For a bank this maps directly onto existing third-party-code review and model-risk-management processes — a Skill is executable logic that touches customer data, not a passive prompt template.</p>
+    </div>
+  </section>
+
+  <!-- ============ COMPARE ============ -->
+  <section id="compare">
+    <div class="kicker">02 &middot; Orientation</div>
+    <h2>The same file, three runtimes</h2>
+    <p class="lede">The <code>SKILL.md</code> format doesn't change. What changes is <em>who loads it, where it executes, and who is holding the other end of the conversation</em> — a raw API caller, a developer at a terminal, or your own application's users.</p>
+
+    <div class="surface-grid">
+      <div class="s-card api">
+        <h4>Skills + Claude API</h4>
+        <div class="who">for: backend engineers, platform teams</div>
+        <p>You call the Messages API directly. Skills are uploaded objects, attached per-request via <code>container.skills</code>, and executed inside an ephemeral, network-isolated sandbox alongside the code-execution tool.</p>
+      </div>
+      <div class="s-card code">
+        <h4>Skills in Claude Code</h4>
+        <div class="who">for: developers, in a repo or terminal</div>
+        <p>Skills are files on disk (<code>~/.claude/skills</code> or <code>.claude/skills</code>) that Claude Code discovers automatically. You author them interactively and invoke them by typing <code>/name</code> or by asking a matching question.</p>
+      </div>
+      <div class="s-card sdk">
+        <h4>Skills + Agent SDK</h4>
+        <div class="who">for: teams building a custom agent product</div>
+        <p>Same filesystem-based Skills as Claude Code, but embedded inside <em>your</em> application via <code>query()</code>. You control exactly which Skills the embedded agent is allowed to invoke.</p>
+      </div>
+    </div>
+
+    <figure>
+      <div class="fig-scroll">
+      <svg viewBox="0 0 900 360" role="img" aria-label="Side by side comparison of the three surfaces. Claude API: skill files uploaded to the Skills API, attached per request through the container.skills parameter, executed inside a sandboxed code-execution container with no network access. Claude Code: SKILL.md files on the local disk under home claude skills or project claude skills, discovered automatically, executed directly in the developer's terminal session. Agent SDK: the same on-disk SKILL.md files, loaded through query options such as cwd, settingSources and skills, executed inside the embedded Claude Code engine running inside the developer's own application.">
+        <!-- column headers -->
+        <text x="150" y="28" text-anchor="middle" class="svg-label" font-weight="700" fill="var(--accent-api)">Claude API</text>
+        <text x="450" y="28" text-anchor="middle" class="svg-label" font-weight="700" fill="var(--accent-code)">Claude Code</text>
+        <text x="750" y="28" text-anchor="middle" class="svg-label" font-weight="700" fill="var(--accent-sdk)">Agent SDK</text>
+
+        <!-- column 1 -->
+        <rect x="45" y="46" width="210" height="70" rx="8" fill="none" stroke="var(--accent-api)" stroke-width="1.5"/>
+        <text x="150" y="72" text-anchor="middle" class="svg-mono">SKILL.md uploaded</text>
+        <text x="150" y="90" text-anchor="middle" class="svg-mono">to /v1/skills</text>
+        <line x1="150" y1="116" x2="150" y2="150" stroke="var(--accent-api)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="150" y="135" text-anchor="middle" class="svg-caption" font-size="10.5">container.skills: [...]</text>
+        <rect x="45" y="152" width="210" height="90" rx="8" fill="var(--accent-api-soft)" stroke="var(--accent-api)" stroke-width="1.5"/>
+        <text x="150" y="180" text-anchor="middle" class="svg-mono">Sandboxed</text>
+        <text x="150" y="198" text-anchor="middle" class="svg-mono">code-execution</text>
+        <text x="150" y="216" text-anchor="middle" class="svg-mono">container</text>
+        <line x1="150" y1="242" x2="150" y2="276" stroke="var(--accent-api)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="150" y="261" text-anchor="middle" class="svg-caption" font-size="10.5">runs, returns file_id</text>
+        <text x="150" y="300" text-anchor="middle" class="svg-caption" font-size="11">caller: your backend /</text>
+        <text x="150" y="316" text-anchor="middle" class="svg-caption" font-size="11">product service</text>
+
+        <!-- column 2 -->
+        <rect x="345" y="46" width="210" height="70" rx="8" fill="none" stroke="var(--accent-code)" stroke-width="1.5"/>
+        <text x="450" y="72" text-anchor="middle" class="svg-mono">SKILL.md on disk</text>
+        <text x="450" y="90" text-anchor="middle" class="svg-mono">~/.claude or .claude/skills</text>
+        <line x1="450" y1="116" x2="450" y2="150" stroke="var(--accent-code)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="450" y="135" text-anchor="middle" class="svg-caption" font-size="10.5">match, or /name</text>
+        <rect x="345" y="152" width="210" height="90" rx="8" fill="var(--accent-code-soft)" stroke="var(--accent-code)" stroke-width="1.5"/>
+        <text x="450" y="180" text-anchor="middle" class="svg-mono">Your terminal</text>
+        <text x="450" y="198" text-anchor="middle" class="svg-mono">session — reads</text>
+        <text x="450" y="216" text-anchor="middle" class="svg-mono">files, runs bash</text>
+        <line x1="450" y1="242" x2="450" y2="276" stroke="var(--accent-code)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="450" y="261" text-anchor="middle" class="svg-caption" font-size="10.5">answers in chat</text>
+        <text x="450" y="300" text-anchor="middle" class="svg-caption" font-size="11">caller: you, in the</text>
+        <text x="450" y="316" text-anchor="middle" class="svg-caption" font-size="11">repo you're working in</text>
+
+        <!-- column 3 -->
+        <rect x="645" y="46" width="210" height="70" rx="8" fill="none" stroke="var(--accent-sdk)" stroke-width="1.5"/>
+        <text x="750" y="72" text-anchor="middle" class="svg-mono">Same SKILL.md,</text>
+        <text x="750" y="90" text-anchor="middle" class="svg-mono">.claude/skills/</text>
+        <line x1="750" y1="116" x2="750" y2="150" stroke="var(--accent-sdk)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="750" y="135" text-anchor="middle" class="svg-caption" font-size="10.5">query({skills,...})</text>
+        <rect x="645" y="152" width="210" height="90" rx="8" fill="var(--accent-sdk-soft)" stroke="var(--accent-sdk)" stroke-width="1.5"/>
+        <text x="750" y="180" text-anchor="middle" class="svg-mono">Embedded agent</text>
+        <text x="750" y="198" text-anchor="middle" class="svg-mono">loop, inside your</text>
+        <text x="750" y="216" text-anchor="middle" class="svg-mono">own application</text>
+        <line x1="750" y1="242" x2="750" y2="276" stroke="var(--accent-sdk)" stroke-width="1.5" marker-end="url(#arr1)"/>
+        <text x="750" y="261" text-anchor="middle" class="svg-caption" font-size="10.5">streams messages back</text>
+        <text x="750" y="300" text-anchor="middle" class="svg-caption" font-size="11">caller: your app's own</text>
+        <text x="750" y="316" text-anchor="middle" class="svg-caption" font-size="11">UI and end users</text>
+      </svg>
+      </div>
+      <figcaption>Fig. 2 — Where each surface's Skill files live and what actually executes them. Code and SDK share the exact same on-disk format; the API is the only one where Skills are uploaded objects run inside a managed sandbox.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Dimension</th><th>Claude API</th><th>Claude Code</th><th>Agent SDK</th></tr></thead>
+        <tbody>
+          <tr><td class="hl">Skill storage</td><td>Uploaded via the Skills API (<code>/v1/skills</code>)</td><td>Files on disk, personal / project / plugin</td><td>Files on disk (identical to Claude Code)</td></tr>
+          <tr><td class="hl">Trigger</td><td><code>container.skills</code> on a Messages request</td><td>Description match, or typed <code>/name</code></td><td><code>skills</code> option on <code>query()</code>, or dispatched <code>/name</code></td></tr>
+          <tr><td class="hl">Execution sandbox</td><td>Isolated container, no network, via the code-execution tool</td><td>Your local shell / dev machine</td><td>The Claude Code engine, embedded in your process</td></tr>
+          <tr><td class="hl">Who's on the other end</td><td>Your own backend or product</td><td>You, interactively</td><td>Your application's end users</td></tr>
+          <tr><td class="hl">Built-ins available</td><td>pptx, xlsx, docx, pdf (Anthropic-managed)</td><td><code>/code-review</code>, <code>/debug</code>, <code>/claude-api</code>, and more (bundled)</td><td>Discovers whatever Claude Code would discover</td></tr>
+          <tr><td class="hl">Typical build cost</td><td>One-time upload + versioning discipline</td><td>Minutes — write a folder, test with <code>/name</code></td><td>Same authoring as Code, plus SDK wiring (<code>options</code>)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ API ============ -->
+  <section id="api" class="section-api">
+    <div class="kicker">03 &middot; Surface one</div>
+    <div class="banner"><span class="dot"></span><h2>Skills with the Claude API</h2></div>
+    <p class="lede">This is Skills as a <strong>server-side capability</strong>: your own backend calls the Messages API and attaches Skills the way it would attach a tool. No terminal, no interactive session — a stateless request that returns a document, a computation, or a formatted file.</p>
+
+    <h3>When to use it</h3>
+    <div class="use-pair">
+      <div class="use-box good">
+        <span class="tag">reach for it when</span>
+        <ul>
+          <li>You're building a product feature that calls Claude programmatically (a loan-origination service, a customer-facing chatbot, a batch job).</li>
+          <li>The task benefits from Anthropic's built-in document Skills — <code>pptx</code>, <code>xlsx</code>, <code>docx</code>, <code>pdf</code> — or a custom Skill you want versioned like an artifact.</li>
+          <li>You need workspace-wide sharing: one Skill, every service in your org's API workspace can attach it.</li>
+        </ul>
+      </div>
+      <div class="use-box bad">
+        <span class="tag">skip it when</span>
+        <ul>
+          <li>A developer needs the Skill while coding — that's Claude Code, not a raw API call.</li>
+          <li>You're shipping your own branded agent product with a UI — the Agent SDK gives you that scaffolding for free.</li>
+          <li>The task needs live network access from inside the Skill's sandbox — the code-execution container has none.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>How it works</h3>
+    <p>A Skill on the API surface is attached through the <code>container</code> parameter of a <code>messages.create</code> call, and it always runs alongside the <strong>code-execution tool</strong> — Skills and code execution share the same sandbox, which is why the tool is a hard requirement, not an option.</p>
+
+    <pre><span class="c1"># 1. List Anthropic-managed skills</span>
+ant skills list --source anthropic
+<span class="c1"># -&gt; pptx, xlsx, docx, pdf</span></pre>
+
+    <pre><span class="c1"># 2. Attach a skill to a request and require code execution</span>
+response = client.messages.create(
+    model="claude-opus-5",
+    max_tokens=16000,
+    container={
+        "skills": [{"type": "anthropic", "skill_id": "pptx", "version": "latest"}]
+    },
+    tools=[{"type": "code_execution_20250825", "name": "code_execution"}],
+    messages=[{"role": "user", "content":
+        "Create a 5-slide presentation summarizing Q3 NPL trends."}],
+)
+
+<span class="c1"># 3. Pull the generated file back out of the response</span>
+for block in response.content:
+    if block.type == "bash_code_execution_tool_result":
+        for out in block.content.content:
+            file_id = out.file_id
+
+client.files.download(file_id=file_id).write_to_file("q3_npl_review.pptx")</pre>
+
+    <p>For a Skill your organization authors — a house style, an internal calculation, a regulated document template — you register it once and reuse a stable identifier:</p>
+
+    <pre><span class="c1"># Upload a custom skill bundle (zip or file list), then pin a version</span>
+skill = client.skills.create(name="credit-memo", files=files_from_dir("./credit-memo/"))
+version = client.skills.versions.create(skill_id=skill.id, files=files_from_dir("./credit-memo/"))
+
+container = {
+    "skills": [{"type": "custom", "skill_id": skill.id, "version": version.id}]  # pinned, not "latest"
+}</pre>
+
+    <p>A few operational details that matter for a bank running this in production: up to <strong>20 Skills per request</strong>; each Skill's files land at <code>/skills/{name}/</code> inside the container; the sandbox has <strong>no network access</strong> and can't install packages at runtime, which is exactly the isolation property a data-governance review will ask about; pin an exact <code>version</code> for production traffic and reserve <code>"latest"</code> for development, so a Skill update never silently changes behavior in a live loan-decisioning pipeline; and Skills aren't priced separately — they're consumed as ordinary token and code-execution usage, but changing the attached Skill list invalidates prompt caching for that request shape.</p>
+
+    <div class="example">
+      <span class="tag">Banking example</span>
+      <p><strong>Automated credit memo generation.</strong> A custom <code>credit-memo</code> Skill bundles the bank's approved memo template, the DSCR/LTV calculation logic as a Python script, and the house style for risk commentary. The loan-origination backend calls the Messages API once per approved application with the applicant's financials in the prompt and <code>container.skills=[credit-memo]</code>; Claude runs the ratio script (deterministic, auditable), drafts the narrative, and returns a formatted Word file via <code>file_id</code> — no human touches a template.</p>
+    </div>
+    <div class="example">
+      <span class="tag">Banking example</span>
+      <p><strong>Nightly regulatory disclosure pack.</strong> A batch job in the bank's data platform attaches the built-in <code>xlsx</code> Skill plus a custom <code>basel-disclosure</code> Skill to turn a risk-weighted-assets extract into the bank's formatted capital-adequacy workbook — run inside a network-isolated container so the extract never leaves the request boundary.</p>
+    </div>
+  </section>
+
+  <!-- ============ CODE ============ -->
+  <section id="code" class="section-code">
+    <div class="kicker">04 &middot; Surface two</div>
+    <div class="banner"><span class="dot"></span><h2>Skills in Claude Code</h2></div>
+    <p class="lede">This is Skills as <strong>developer tooling</strong>: a folder on disk that Claude Code discovers automatically, invoked either by Claude itself when your request matches, or by you typing <code>/skill-name</code>. It's the fastest surface to author on and the one most engineers meet first.</p>
+
+    <h3>When to use it</h3>
+    <div class="use-pair">
+      <div class="use-box good">
+        <span class="tag">reach for it when</span>
+        <ul>
+          <li>You keep re-pasting the same checklist, review steps, or domain context into chat — that's the signal a Skill should exist.</li>
+          <li>A section of your <code>CLAUDE.md</code> has grown from a fact into a multi-step procedure — Skills load on demand, so it stops costing tokens on every turn.</li>
+          <li>You want the procedure to travel with the repo (project Skill) or with you across every repo (personal Skill).</li>
+        </ul>
+      </div>
+      <div class="use-box bad">
+        <span class="tag">skip it when</span>
+        <ul>
+          <li>The capability needs to run headless, inside a product you're shipping to customers — that's the API or the SDK.</li>
+          <li>It's a one-off instruction for this conversation only — just say it; a Skill is for something you'll need again.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>How to build one</h3>
+    <ol>
+      <li>Create the folder — personal (<code>~/.claude/skills/&lt;name&gt;/</code>) applies to every project; project (<code>.claude/skills/&lt;name&gt;/</code>) applies to this repo only.</li>
+      <li>Write <code>SKILL.md</code>: YAML frontmatter with at least a <code>description</code> that states what it does <em>and</em> when to use it, then the Markdown instructions.</li>
+      <li>Test it two ways — ask a matching question and let Claude auto-invoke, or type <code>/skill-name</code> directly.</li>
+    </ol>
+
+    <pre>mkdir -p ~/.claude/skills/summarize-changes</pre>
+    <pre><span class="c1">---</span>
+description: Summarizes uncommitted changes and flags anything risky. Use when
+  the user asks what changed, wants a commit message, or asks to review a diff.
+<span class="c1">---</span>
+
+## Current changes
+
+!`git diff HEAD`
+
+## Instructions
+
+Summarize the changes above in two or three bullets, then list any risks —
+missing error handling, hardcoded values, tests that need updating.</pre>
+
+    <p>The <code>!`git diff HEAD`</code> line is <strong>dynamic context injection</strong>: Claude Code runs that command and splices its live output into the Skill before Claude ever sees it, so the instructions arrive already grounded in your actual working tree rather than something Claude has to guess at.</p>
+
+    <h3>Where a skill lives decides who gets it — and who wins a name clash</h3>
+    <p>Skill locations resolve in a strict precedence order, which matters the moment two Skills share a name:</p>
+
+    <figure>
+      <div class="fig-scroll">
+      <svg viewBox="0 0 760 260" role="img" aria-label="Precedence stack for Claude Code skill resolution, top to bottom: Enterprise skills, deployed by an administrator through managed settings, apply to every user in the organization and override everything below. Personal skills at home dot claude slash skills apply across all of that user's projects and override project skills. Project skills at dot claude slash skills apply to one repository only. Plugin skills are namespaced by plugin name so they never collide with the other three levels.">
+        <defs>
+          <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--accent-code)"/>
+          </marker>
+        </defs>
+        <rect x="40" y="20" width="480" height="46" rx="8" fill="var(--accent-code-soft)" stroke="var(--accent-code)" stroke-width="1.5"/>
+        <text x="60" y="48" class="svg-label" font-weight="700">Enterprise</text>
+        <text x="200" y="48" class="svg-mono" fill="currentColor" opacity=".75">managed settings — org-wide</text>
+
+        <rect x="80" y="80" width="440" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="100" y="108" class="svg-label" font-weight="700">Personal</text>
+        <text x="220" y="108" class="svg-mono" fill="currentColor" opacity=".75">~/.claude/skills/ — every project you touch</text>
+
+        <rect x="120" y="140" width="400" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="140" y="168" class="svg-label" font-weight="700">Project</text>
+        <text x="230" y="168" class="svg-mono" fill="currentColor" opacity=".75">.claude/skills/ — this repository only</text>
+
+        <line x1="70" y1="66" x2="70" y2="76" stroke="var(--accent-code)" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="110" y1="126" x2="110" y2="136" stroke="var(--accent-code)" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <text x="600" y="103" class="svg-caption" font-size="11">overrides ↓</text>
+
+        <rect x="560" y="140" width="160" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <text x="640" y="163" text-anchor="middle" class="svg-label" font-weight="700">Plugin</text>
+        <text x="640" y="178" text-anchor="middle" class="svg-mono" font-size="10">namespaced — never clashes</text>
+
+        <text x="60" y="225" class="svg-caption" font-size="11">A "deploy" skill in ~/.claude/skills/ and .claude/skills/ at once →</text>
+        <text x="60" y="242" class="svg-caption" font-size="11">typing /deploy runs the personal one; the project one is shadowed, not deleted.</text>
+      </svg>
+      </div>
+      <figcaption>Fig. 3 — Enterprise beats personal beats project when names collide; plugin Skills sidestep the whole question by living in their own <code>plugin-name:skill-name</code> namespace.</figcaption>
+    </figure>
+
+    <p>Two frontmatter fields put a human hand on the automation, which matters most for anything with side effects:</p>
+    <ul>
+      <li><code>disable-model-invocation: true</code> — only a person can run it, via <code>/name</code>. Use this for anything with a side effect: <code>/deploy</code>, <code>/send-payment-notice</code>. You don't want Claude deciding to deploy because the code "looks ready."</li>
+      <li><code>user-invocable: false</code> — only Claude can use it. Good for background domain knowledge, like a Skill that explains an internal ledger schema, that isn't a meaningful thing for a person to "run" directly.</li>
+    </ul>
+
+    <div class="example">
+      <span class="tag">Banking example</span>
+      <p><strong>Enterprise-wide PCI review skill.</strong> A <code>pci-lint</code> Skill deployed through managed settings runs for every engineer touching the payments codebase, checking for logged PANs and missing encryption before a diff is committed — installed once by platform engineering, not per-developer, and it wins over any personal skill an individual engineer happens to have named the same thing.</p>
+    </div>
+    <div class="example">
+      <span class="tag">Banking example</span>
+      <p><strong>Personal, non-invocable context skill.</strong> An AI engineer keeps a <code>feature-store-schema</code> Skill with <code>user-invocable: false</code> in <code>~/.claude/skills/</code> — Claude consults it automatically whenever a conversation touches the credit-risk feature store, but nobody ever types <code>/feature-store-schema</code>, because it's reference knowledge, not an action.</p>
+    </div>
+  </section>
+
+  <!-- ============ SDK ============ -->
+  <section id="sdk" class="section-sdk">
+    <div class="kicker">05 &middot; Surface three</div>
+    <div class="banner"><span class="dot"></span><h2>Skills with the Claude Agent SDK</h2></div>
+    <p class="lede">This is Skills embedded inside <strong>your own application</strong>. The SDK runs the same Claude Code engine under the hood, so it discovers the identical <code>SKILL.md</code> files from disk — but now <em>you</em> decide, programmatically, which ones the embedded agent may ever touch.</p>
+
+    <h3>When to use it</h3>
+    <div class="use-pair">
+      <div class="use-box good">
+        <span class="tag">reach for it when</span>
+        <ul>
+          <li>You're building your own agent product — a copilot with its own UI, auth, and users — not calling the API from a stateless backend.</li>
+          <li>You want the terminal-grade agent loop (multi-turn, tool use, subagents) without asking every user to install Claude Code.</li>
+          <li>You need to lock the agent down to a vetted allowlist of Skills for a specific workflow, rather than "whatever's on disk."</li>
+        </ul>
+      </div>
+      <div class="use-box bad">
+        <span class="tag">skip it when</span>
+        <ul>
+          <li>A single stateless document-generation call is all you need — that's the plain API surface, with less wiring.</li>
+          <li>You're the one at the terminal — just use Claude Code directly.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>How it works</h3>
+    <p>Skills are <strong>filesystem artifacts</strong> the same way they are in Claude Code — there is no programmatic "register a skill" API. What the SDK adds is control: the <code>skills</code> option on <code>query()</code> takes a list of names, <code>"all"</code>, or <code>[]</code>, and <code>settingSources</code> decides which directories are even discovered.</p>
+
+    <pre>options = ClaudeAgentOptions(
+    cwd=os.getcwd(),                       <span class="c1"># where .claude/skills/ lives</span>
+    setting_sources=["user", "project"],   <span class="c1"># load skills from disk at all</span>
+    skills=["kyc-refresh", "sar-narrative"], <span class="c1"># allowlist — nothing else is reachable</span>
+    allowed_tools=["Read", "Grep", "Bash"],
+)
+
+async for message in query(
+    prompt="Draft a SAR narrative for case 4471.", options=options
+):
+    print(message)</pre>
+
+    <p>Three things trip up a first integration, and all three are captured in the troubleshooting section of the SDK docs:</p>
+    <ul>
+      <li><strong>Empty <code>settingSources</code> means zero Skills load</strong> — omitting the option keeps CLI-matching defaults, but explicitly setting <code>settingSources: []</code> silently disables discovery.</li>
+      <li><strong><code>cwd</code> has to sit at or below the <code>.claude/skills/</code> directory</strong> — the SDK walks up from <code>cwd</code> to the repository root looking for skill folders.</li>
+      <li><strong>The <code>skills</code> allowlist takes exact names only</strong> — no wildcards. An unlisted Skill's files stay on disk and readable via <code>Read</code>/<code>Bash</code>, but the model can't see it and the Skill tool rejects an attempt to invoke it.</li>
+    </ul>
+
+    <p>Restricting the allowlist doesn't restrict direct dispatch: sending the literal string <code>/security-check</code> in a prompt still runs a user-invocable Skill even if it's absent from your <code>skills</code> list — the allowlist governs what <em>Claude decides to invoke on its own</em>, not what you can call by name.</p>
+
+    <div class="example">
+      <span class="tag">Banking example</span>
+      <p><strong>AML investigator copilot.</strong> The bank builds its own case-management-integrated application on the Agent SDK. The embedded agent's <code>skills</code> list is locked to exactly two: <code>transaction-pattern-lookup</code> and <code>sar-narrative-draft</code>. <code>allowed_tools</code> is restricted to <code>Read</code> and <code>Grep</code>, so the copilot can inspect case files but can never execute arbitrary bash against a live investigation directory — the allowlist is the control an internal model-risk review will ask to see.</p>
+    </div>
+    <div class="example">
+      <span class="tag">Banking example</span>
+      <p><strong>Relationship-manager desktop copilot.</strong> A branch-facing tool built on the Agent SDK sets <code>settingSources=["project"]</code> and points <code>cwd</code> at a private repository of the bank's playbooks — KYC refresh steps, next-best-product logic — so relationship managers get the same terminal-grade agent loop developers use, with no local developer environment or Claude Code install involved.</p>
+    </div>
+  </section>
+
+  <!-- ============ DECIDE ============ -->
+  <section id="decide">
+    <div class="kicker">06 &middot; Orientation, again</div>
+    <h2>Which surface do I actually reach for?</h2>
+    <p class="lede">The three surfaces aren't competing options — most real deployments in a bank end up using all three for different jobs. The question is what's calling Claude.</p>
+    <div class="table-wrap">
+      <table class="decide">
+        <thead><tr><th>What's calling Claude</th><th>Surface</th></tr></thead>
+        <tbody>
+          <tr><td>A backend service, batch job, or customer-facing product hitting the Messages API directly</td><td style="color:var(--accent-api)">Claude API</td></tr>
+          <tr><td>A developer, working interactively in a repo or terminal</td><td style="color:var(--accent-code)">Claude Code</td></tr>
+          <tr><td>Your own application, with its own UI and users, that needs a full agent loop embedded in it</td><td style="color:var(--accent-sdk)">Agent SDK</td></tr>
+          <tr><td>All three of the above, for the same organization</td><td>All three — same <code>SKILL.md</code>, different wiring</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Because Claude Code and the Agent SDK read the identical filesystem format, a Skill authored and tested at a developer's terminal can move into a shipped product with zero rewriting — only the <code>options</code> around it change. The API surface is the outlier: there, a Skill is a versioned, uploaded object rather than a local file, which is the right trade-off for something that has to run unattended in production at scale.</p>
+  </section>
+
+  <!-- ============ BANKING ============ -->
+  <section id="banking">
+    <div class="kicker">07 &middot; Applied</div>
+    <h2>Banking &amp; finance: a map of use cases</h2>
+    <p class="lede">Pulling the examples above into one view — the same three-surface logic applies whether the workload is customer-facing, developer-facing, or embedded in an internal tool.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Surface</th><th>Use case</th><th>Why this surface</th></tr></thead>
+        <tbody>
+          <tr><td class="hl" style="color:var(--accent-api)">API</td><td>Credit memo generation on loan approval</td><td>Stateless, called from the origination backend, needs a versioned/pinned Skill for audit consistency</td></tr>
+          <tr><td class="hl" style="color:var(--accent-api)">API</td><td>Nightly Basel/regulatory disclosure workbook</td><td>Batch job, network-isolated sandbox keeps risk data from leaving the request boundary</td></tr>
+          <tr><td class="hl" style="color:var(--accent-api)">API</td><td>Retail-app account statement / investment summary PDFs</td><td>Multi-tenant, per-conversation, built-in <code>pdf</code> Skill plus a custom template Skill</td></tr>
+          <tr><td class="hl" style="color:var(--accent-code)">Code</td><td>Enterprise <code>pci-lint</code> pre-commit review</td><td>Needs to apply to every engineer, org-wide, via managed settings precedence</td></tr>
+          <tr><td class="hl" style="color:var(--accent-code)">Code</td><td><code>/regtest-report</code> audit-evidence drafting</td><td>Interactive, pulls the live diff via dynamic context injection</td></tr>
+          <tr><td class="hl" style="color:var(--accent-code)">Code</td><td>Feature-store schema background knowledge</td><td><code>user-invocable:false</code> — informs Claude silently, isn't a command</td></tr>
+          <tr><td class="hl" style="color:var(--accent-sdk)">SDK</td><td>AML/SAR investigator copilot</td><td>Locked Skill + tool allowlist for a model-risk-reviewed internal product</td></tr>
+          <tr><td class="hl" style="color:var(--accent-sdk)">SDK</td><td>Branch relationship-manager desktop copilot</td><td>Full agent loop embedded in a purpose-built app, no developer tooling required for end users</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <span class="tag">Critical thinking check</span>
+      <p>Before shipping any of these, verify against your own institution's model-risk and data-governance policy — the mechanics above (sandbox isolation, version pinning, tool allowlists, enterprise-level skill precedence) are the controls the documentation exposes, but whether they satisfy your bank's specific regulatory obligations (SR 11-7-style model governance, GDPR/PDPA data residency, local banking-secrecy rules) is a compliance judgment this page doesn't make for you.</p>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz">
+    <div class="kicker">08 &middot; Check yourself</div>
+    <h2>Three questions</h2>
+    <p class="lede">Answer in your own words before revealing each one.</p>
+
+    <details class="quiz-item">
+      <summary><span class="qn">Q1</span> A Skill folder bundles a 40-page <code>REFERENCE.md</code>. Why doesn't that file inflate your context window just because the Skill is enabled?</summary>
+      <div class="quiz-answer">Because of <strong>progressive disclosure</strong> (Fig. 1). Only Level 1 — the <code>name</code> and <code>description</code> from the frontmatter, roughly 100 tokens — is always loaded, for every enabled Skill, in every session. The <code>SKILL.md</code> body (Level 2) loads only once the description matches the request. A separate file like <code>REFERENCE.md</code> (Level 3) loads only if the body explicitly points Claude to it for the task at hand — so a 40-page reference costs nothing until a request actually needs it, and even then, only the parts read.</div>
+    </details>
+
+    <details class="quiz-item">
+      <summary><span class="qn">Q2</span> Your loan-origination service calls the Messages API directly from a backend and needs to generate a Word credit memo on every approved application. Which surface, and what does the request have to include?</summary>
+      <div class="quiz-answer">The <strong>Claude API</strong> surface — this is a stateless, programmatic caller, not a developer at a terminal or a custom agent product. The request must include a <code>container.skills</code> entry naming the Skill (the built-in <code>docx</code>, or a custom <code>credit-memo</code> Skill) <em>and</em> the <code>code_execution</code> tool in the <code>tools</code> list, since Skills on the API surface always run inside the code-execution sandbox — attaching a Skill without the tool won't work.</div>
+    </details>
+
+    <details class="quiz-item">
+      <summary><span class="qn">Q3</span> You want a <code>pci-lint</code> Skill to run for every engineer touching the payments codebase bank-wide, not something each engineer opts into individually. Which Claude Code skill location, and why does it beat a personal Skill with the same name?</summary>
+      <div class="quiz-answer">The <strong>enterprise</strong> location, deployed through managed settings by an administrator. Per the precedence order in Fig. 3 — enterprise overrides personal, and personal overrides project — an enterprise-level <code>pci-lint</code> always wins a name clash against any individual engineer's personal copy in <code>~/.claude/skills/</code>, which is exactly what guarantees every engineer runs the sanctioned version rather than whatever they happened to write for themselves.</div>
+    </details>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section id="sources" class="sources">
+    <div class="kicker">09 &middot; References</div>
+    <h2>Sources</h2>
+    <p class="lede">Every mechanic, field name, and code example above is drawn from Anthropic's own documentation, fetched September 2026.</p>
+    <ol>
+      <li><a href="https://www.anthropic.com/news/skills" target="_blank" rel="noopener">Introducing Agent Skills</a> — Anthropic, product announcement and cross-platform overview.</li>
+      <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview" target="_blank" rel="noopener">Agent Skills — Overview and Best Practices</a> — Claude Platform Docs. SKILL.md anatomy, progressive disclosure levels, best practices.</li>
+      <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart" target="_blank" rel="noopener">Agent Skills — API Quickstart</a> — Claude Platform Docs. <code>container.skills</code>, code-execution requirement, file download flow.</li>
+      <li><a href="https://platform.claude.com/docs/en/build-with-claude/skills-guide" target="_blank" rel="noopener">Using Agent Skills with the API</a> — Claude Platform Docs. <code>/v1/skills</code> endpoint, versioning, pricing, container mechanics, constraints.</li>
+      <li><a href="https://code.claude.com/docs/en/skills" target="_blank" rel="noopener">Extend Claude with skills</a> — Claude Code Docs. Skill locations and precedence, frontmatter reference, dynamic context injection, invocation control.</li>
+      <li><a href="https://code.claude.com/docs/en/agent-sdk/skills" target="_blank" rel="noopener">Extend agents with skills</a> — Claude Agent SDK Docs. <code>skills</code> option, <code>settingSources</code>, discovery rules, troubleshooting, code examples.</li>
+      <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill" target="_blank" rel="noopener">The claude-api skill</a> — Claude Platform Docs. Reference for the bundled Skill that documents the Messages API itself.</li>
+    </ol>
+  </section>
+
+  <footer>Built for the GenAI Engineer training track &middot; verify against current Anthropic docs before production use, as APIs and model names evolve.</footer>
+
+</main>
